@@ -1,6 +1,7 @@
 package com.epicwin.prohub.service;
 
 
+import com.epicwin.prohub.model.authentication.PasswordRequest;
 import com.epicwin.prohub.model.authentication.UpdatedUser;
 import com.epicwin.prohub.repo.UserRepo;
 import com.epicwin.prohub.model.authentication.User;
@@ -57,8 +58,15 @@ public class UserService implements UserDetailsService {
     public void updateUser(UpdatedUser updatedUser) {
         User user = userRepo.findUserByEmail(updatedUser.getEmail());
         user.setFirstName(updatedUser.getFirstName());
+        user.setLastName(updatedUser.getLastName());
         user.setEmail(updatedUser.getEmail());
         user.setDesignation(updatedUser.getDesignation());
+        userRepo.save(user);
+    }
+
+    public void changePassword(String email, PasswordRequest passwordRequest) {
+        User user = userRepo.findUserByEmail(email);
+        user.setPassword(passwordEncoder.encode(passwordRequest.getPassword()));
         userRepo.save(user);
     }
 }
