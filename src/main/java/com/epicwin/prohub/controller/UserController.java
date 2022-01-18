@@ -1,10 +1,7 @@
 package com.epicwin.prohub.controller;
 
 import com.epicwin.prohub.configuration.JwtTokenUtil;
-import com.epicwin.prohub.model.authentication.JwtRequest;
-import com.epicwin.prohub.model.authentication.ResponseUser;
-import com.epicwin.prohub.model.authentication.UpdatedUser;
-import com.epicwin.prohub.model.authentication.User;
+import com.epicwin.prohub.model.authentication.*;
 import com.epicwin.prohub.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -82,6 +79,11 @@ public class UserController {
     @DeleteMapping("/users/{email}")
     public void deleteUser(@PathVariable String email) {
         userService.deleteUser(email);
+    }
+
+    @PutMapping("/users/{email}/changePassword")
+    public void changePassword(@RequestBody PasswordRequest passwordRequest, @PathVariable String email) {
+        userService.changePassword(email, passwordRequest);
     }
 
     private void authenticate(String email, String password) throws Exception {
