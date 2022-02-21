@@ -2,6 +2,8 @@ package com.epicwin.prohub.controller;
 
 import com.epicwin.prohub.configuration.JwtTokenUtil;
 import com.epicwin.prohub.model.authentication.*;
+import com.epicwin.prohub.model.email.Mail;
+import com.epicwin.prohub.service.MailService;
 import com.epicwin.prohub.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +31,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MailService mailService;
+
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseUser createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
@@ -47,6 +52,15 @@ public class UserController {
     @PostMapping("/register")
     public void register(@RequestBody User user) {
         userService.saveUser(user);
+        Mail mail = new Mail();
+        mail.setMailFrom("");
+        mail.setMailTo(user.getEmail());
+        mail.setMailSubject("Welcome to ProHub");
+        mail.setMailContent("Hi! " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
+                "Thank you for registering to ProHub. " +
+                "Make your project management things easier with ProHub\n\nThanks,\nTeam ProHub");
+
+        mailService.sendEmail(mail);
     }
 
     @PostMapping("/users")
