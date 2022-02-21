@@ -2,6 +2,7 @@ package com.epicwin.prohub.controller;
 
 import com.epicwin.prohub.configuration.JwtTokenUtil;
 import com.epicwin.prohub.model.authentication.*;
+import com.epicwin.prohub.model.email.EmailRequest;
 import com.epicwin.prohub.model.email.Mail;
 import com.epicwin.prohub.service.MailService;
 import com.epicwin.prohub.service.UserService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Controller class for handling user operations.
@@ -52,15 +54,11 @@ public class UserController {
     @PostMapping("/register")
     public void register(@RequestBody User user) {
         userService.saveUser(user);
-        Mail mail = new Mail();
-        mail.setMailFrom("");
-        mail.setMailTo(user.getEmail());
-        mail.setMailSubject("Welcome to ProHub");
-        mail.setMailContent("Hi! " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
+        String title = "Welcome to ProHub";
+        String content = "Hi! " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
                 "Thank you for registering to ProHub. " +
-                "Make your project management things easier with ProHub\n\nThanks,\nTeam ProHub");
-
-        mailService.sendEmail(mail);
+                "Make your project management things easier with ProHub.\n\nThanks,\nTeam ProHub";
+        sendEmail(user.getEmail(), title, content);
     }
 
     @PostMapping("/users")
@@ -100,14 +98,23 @@ public class UserController {
         userService.changePassword(email, passwordRequest);
 
         User user = userService.getUser(email);
-        Mail mail = new Mail();
-        mail.setMailFrom("");
-        mail.setMailTo(email);
-        mail.setMailSubject("Password Changed");
-        mail.setMailContent("Hi! " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
-                "This is to notify that you have changed your password\n\nThanks,\nTeam ProHub");
+        String title = "Password Changed";
+        String content = "Hi! " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
+                "This is to notify that you have changed your password.\n\nThanks,\nTeam ProHub";
+        sendEmail(email, title, content);
+    }
 
-        mailService.sendEmail(mail);
+    @PostMapping("/forgotPassword")
+    public void handleForgotPassword(@RequestBody EmailRequest emailRequest) {
+        User user = userService.getUser(emailRequest.getEmail());
+        String newPassword = getSaltString();
+        userService.changePassword(emailRequest.getEmail(), new PasswordRequest(newPassword));
+
+        String title = "Forgot Password";
+        String content = "Hi! " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
+            "Your Temporary password: " + newPassword +
+            "\nNote: Use this password for signing in and change your password immediately.\n\nThanks,\nTeam ProHub";
+        sendEmail(emailRequest.getEmail(), title, content);
     }
 
     private void authenticate(String email, String password) throws Exception {
@@ -118,6 +125,30 @@ public class UserController {
         } catch (BadCredentialsException e) {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
+    }
+
+    private void sendEmail(String email, String title, String content) {
+
+        Mail mail = new Mail();
+        mail.setMailFrom("");
+        mail.setMailTo(email);
+        mail.setMailSubject(title);
+        mail.setMailContent(content);
+
+        mailService.sendEmail(mail);
+    }
+
+    private String getSaltString() {
+
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz";
+        StringBuilder salt = new StringBuilder();
+        Random random = new Random();
+        while (salt.length() < 18) {
+            int index = (int) (random.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+        return saltStr;
     }
 }
 
