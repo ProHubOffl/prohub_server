@@ -36,7 +36,7 @@ public class MailService implements MailRepo {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
             mimeMessageHelper.setSubject(mail.getMailSubject());
-            mimeMessageHelper.setFrom(new InternetAddress(mail.getMailFrom(), ""));
+            mimeMessageHelper.setFrom(new InternetAddress(mail.getMailFrom(), "ProHub"));
             mimeMessageHelper.setTo(mail.getMailTo());
             mimeMessageHelper.setText(mail.getMailContent());
 

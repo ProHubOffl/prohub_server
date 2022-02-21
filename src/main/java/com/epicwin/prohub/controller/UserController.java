@@ -98,6 +98,16 @@ public class UserController {
     @PutMapping("/users/{email}/changePassword")
     public void changePassword(@RequestBody PasswordRequest passwordRequest, @PathVariable String email) {
         userService.changePassword(email, passwordRequest);
+
+        User user = userService.getUser(email);
+        Mail mail = new Mail();
+        mail.setMailFrom("");
+        mail.setMailTo(email);
+        mail.setMailSubject("Password Changed");
+        mail.setMailContent("Hi! " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
+                "This is to notify that you have changed your password\n\nThanks,\nTeam ProHub");
+
+        mailService.sendEmail(mail);
     }
 
     private void authenticate(String email, String password) throws Exception {
