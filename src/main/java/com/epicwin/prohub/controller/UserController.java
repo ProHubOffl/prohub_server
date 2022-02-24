@@ -112,7 +112,7 @@ public class UserController {
             return Response.SC_BAD_REQUEST;
         } else {
             userService.changePassword(email, passwordRequest);
-            String title = "Password Changed";
+            String title = "Password Changed!";
             String content = "Hi! " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
                     "This is to notify that you have changed your password.\n\nThanks,\nTeam ProHub";
             try {
@@ -131,7 +131,7 @@ public class UserController {
             return Response.SC_BAD_REQUEST;
         } else {
             String newPassword = getSaltString();
-            String title = "Forgot Password";
+            String title = "Forgot Password Notification";
             String content = "Hi! " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
                     "Your Temporary password: " + newPassword +
                     "\nNote: Use this password for signing in and change your password immediately.\n\nThanks,\nTeam ProHub";
@@ -154,7 +154,7 @@ public class UserController {
     private void sendEmail(String email, String title, String content) {
 
         Mail mail = new Mail();
-        mail.setMailFrom("");
+        mail.setMailFrom("prohubclient@gmail.com");
         mail.setMailTo(email);
         mail.setMailSubject(title);
         mail.setMailContent(content);
