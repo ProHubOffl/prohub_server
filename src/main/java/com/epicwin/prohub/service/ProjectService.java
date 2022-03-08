@@ -1,5 +1,6 @@
 package com.epicwin.prohub.service;
 
+import com.epicwin.prohub.exception.EntityNotFoundException;
 import com.epicwin.prohub.model.project.Project;
 import com.epicwin.prohub.model.project.UpdatedProject;
 import com.epicwin.prohub.repo.ProjectRepo;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Service class for handling project operations.
@@ -31,8 +33,13 @@ public class ProjectService {
      *
      * @return all projects
      */
-    public List<Project> getAllProjects() {
-        return projectRepo.findAll();
+    public List<Project> getAllProjects() throws EntityNotFoundException {
+
+        List<Project> projects =  projectRepo.findAll();
+        if(projects.isEmpty()) {
+            throw new EntityNotFoundException("Unable to retrieve the list of projects");
+        }
+        return projects;
     }
 
     /**
@@ -69,8 +76,12 @@ public class ProjectService {
      * @param projectName
      * @return project
      */
-    public Project getProjectByProjectName(String projectName) {
-        return projectRepo.findProjectByProjectName(projectName);
+    public Project getProjectByProjectName(String projectName) throws EntityNotFoundException {
+        Project project = projectRepo.findProjectByProjectName(projectName);
+        if(Objects.isNull(project)) {
+            throw new EntityNotFoundException("Requested Project Details Not Found");
+        }
+        return project;
     }
 
 }

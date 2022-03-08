@@ -1,5 +1,6 @@
 package com.epicwin.prohub.controller;
 
+import com.epicwin.prohub.exception.EntityNotFoundException;
 import com.epicwin.prohub.model.project.Project;
 import com.epicwin.prohub.model.project.UpdatedProject;
 import com.epicwin.prohub.service.ProjectService;
@@ -35,7 +36,7 @@ public class ProjectController {
      * @return all projects
      */
     @GetMapping("/project")
-    public List<Project> getAllProjects() {
+    public List<Project> getAllProjects() throws EntityNotFoundException {
         return projectService.getAllProjects();
     }
 
@@ -68,7 +69,7 @@ public class ProjectController {
      * @return project
      */
     @GetMapping("/project/{projectName}")
-    public Project getProjectByProjectName(@PathVariable("projectName") String projectName) {
+    public Project getProjectByProjectName(@PathVariable("projectName") String projectName) throws EntityNotFoundException {
         return projectService.getProjectByProjectName(projectName);
     }
 
