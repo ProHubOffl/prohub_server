@@ -32,13 +32,15 @@ public class Backlog {
     private String lastUpdated;
     @Column(name = "last_updated_user")
     private String lastUpdatedUser;
+    @Column(name = "story_points")
+    private int storyPoints;
 
     public Backlog() {
     }
 
     public Backlog(int backlogId, String title, String description, String projectName, int sprint, String createdBy,
                    String assignee, String status, String createdAt, String finishedAt, String lastUpdated,
-                   String lastUpdatedUser) {
+                   String lastUpdatedUser, int storyPoints) {
         this.backlogId = backlogId;
         this.title = title;
         this.description = description;
@@ -51,11 +53,12 @@ public class Backlog {
         this.finishedAt = finishedAt;
         this.lastUpdated = lastUpdated;
         this.lastUpdatedUser = lastUpdatedUser;
+        this.storyPoints = storyPoints;
     }
 
     public Backlog(String title, String description, String projectName, int sprint, String createdBy,
                    String assignee, String status, String createdAt, String finishedAt, String lastUpdated,
-                   String lastUpdatedUser) {
+                   String lastUpdatedUser, int storyPoints) {
         this.title = title;
         this.description = description;
         this.projectName = projectName;
@@ -67,10 +70,11 @@ public class Backlog {
         this.finishedAt = finishedAt;
         this.lastUpdated = lastUpdated;
         this.lastUpdatedUser = lastUpdatedUser;
+        this.storyPoints = storyPoints;
     }
 
     public Backlog(String title, String description, String projectName, int sprint, String createdBy,
-                   String assignee, String status, String createdAt) {
+                   String assignee, String status, String createdAt, int storyPoints) {
         this.title = title;
         this.description = description;
         this.projectName = projectName;
@@ -79,6 +83,7 @@ public class Backlog {
         this.assignee = assignee;
         this.status = status;
         this.createdAt = createdAt;
+        this.storyPoints = storyPoints;
     }
 
     public int getBacklogId() {
@@ -175,5 +180,13 @@ public class Backlog {
 
     public void setLastUpdatedUser(String lastUpdatedUser) {
         this.lastUpdatedUser = lastUpdatedUser;
+    }
+
+    public int getStoryPoints() {
+        return storyPoints;
+    }
+
+    public void setStoryPoints(int storyPoints) {
+        this.storyPoints = storyPoints;
     }
 }

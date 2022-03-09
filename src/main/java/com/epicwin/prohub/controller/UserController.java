@@ -13,12 +13,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Controller class for handling user operations.
@@ -37,6 +35,9 @@ public class UserController {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseUser createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
@@ -105,22 +106,26 @@ public class UserController {
         userService.deleteUser(email);
     }
 
-    @PutMapping("/users/{email}/changePassword")
-    public int changePassword(@RequestBody PasswordRequest passwordRequest, @PathVariable String email) {
+    @PutMapping("/changePassword/{email}")
+    public int changePassword(@RequestBody ChangePasswordRequest passwordRequest, @PathVariable String email) {
         User user = userService.getUser(email);
         if (Objects.isNull(user)) {
             return Response.SC_BAD_REQUEST;
         } else {
-            userService.changePassword(email, passwordRequest);
-            String title = "Password Changed!";
-            String content = "Hi! " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
-                    "This is to notify that you have changed your password.\n\nThanks,\nTeam ProHub";
-            try {
-                sendEmail(user.getEmail(), title, content);
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (passwordEncoder.matches(passwordRequest.getCurrentPassword(), user.getPassword())) {
+                userService.changePassword(email, new PasswordRequest(passwordRequest.getNewPassword()));
+                String title = "Password Changed!";
+                String content = "Hi! " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
+                        "This is to notify that you have changed your password.\n\nThanks,\nTeam ProHub";
+                try {
+                    sendEmail(user.getEmail(), title, content);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return Response.SC_OK;
+            } else {
+                return Response.SC_CONFLICT;
             }
-            return Response.SC_OK;
         }
     }
 
