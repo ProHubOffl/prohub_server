@@ -1,5 +1,6 @@
 package com.epicwin.prohub.service;
 
+import com.epicwin.prohub.exception.EntityNotFoundException;
 import com.epicwin.prohub.model.userImage.UserImage;
 import com.epicwin.prohub.repo.UserImageRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,16 @@ public class UserImageService {
         return userImageRepo.save(userImage);
     }
 
-    public UserImage getImageFile(String email) {
-        return userImageRepo.findUserImageByEmail(email);
+    public UserImage getImageFile(String email) throws EntityNotFoundException {
+        UserImage userImage = userImageRepo.findUserImageByEmail(email);
+        if(Objects.isNull(userImage)) {
+            throw new EntityNotFoundException("Requested User Image Entity Not Found");
+        } else {
+            return userImage;
+        }
     }
 
-    public UserImage updateImageFile(MultipartFile file, String email) throws IOException {
+    public UserImage updateImageFile(MultipartFile file, String email) throws IOException, EntityNotFoundException {
         UserImage userImage = getImageFile(email);
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         if(Objects.isNull(userImage)) {
@@ -45,7 +51,12 @@ public class UserImageService {
         }
     }
 
-    public void deleteImageFile(String email) {
-        userImageRepo.deleteUserImageByEmail(email);
+    public void deleteImageFile(String email) throws EntityNotFoundException {
+        UserImage userImage = userImageRepo.findUserImageByEmail(email);
+        if(Objects.isNull(userImage)) {
+            throw new EntityNotFoundException("Requested User Image Entity Not Found");
+        } else {
+            userImageRepo.deleteUserImageByEmail(email);
+        }
     }
 }

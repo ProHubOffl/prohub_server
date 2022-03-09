@@ -1,10 +1,10 @@
 package com.epicwin.prohub.controller;
 
+import com.epicwin.prohub.exception.EntityNotFoundException;
 import com.epicwin.prohub.model.userImage.UserImage;
 import com.epicwin.prohub.model.userImage.UserImageResponseFile;
 import com.epicwin.prohub.model.userImage.UserImageResponseMessage;
 import com.epicwin.prohub.service.UserImageService;
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -41,16 +41,18 @@ public class UserImageController {
     }
 
     @GetMapping("userImage/{email}/download")
-    public ResponseEntity<byte[]> getFile(@PathVariable String email) {
-        UserImage userImage  = userImageService.getImageFile(email);
+    public ResponseEntity<byte[]> getFile(@PathVariable String email) throws EntityNotFoundException {
+        UserImage userImage = userImageService.getImageFile(email);
         byte[] base64encodedData = Base64.getEncoder().encode(userImage.getData());
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + userImage.getName() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""
+                        + userImage.getName() + "\"")
                 .body(base64encodedData);
     }
 
     @GetMapping("userImage/{email}")
-    public ResponseEntity<UserImageResponseFile> getUserImageData(@PathVariable String email) {
+    public ResponseEntity<UserImageResponseFile> getUserImageData(@PathVariable String email)
+            throws EntityNotFoundException {
 
         UserImage userImage = userImageService.getImageFile(email);
         String fileDownloadUri = ServletUriComponentsBuilder
@@ -60,7 +62,7 @@ public class UserImageController {
                 .path("/download/")
                 .toUriString();
 
-        UserImageResponseFile responseFile =  new UserImageResponseFile(
+        UserImageResponseFile responseFile = new UserImageResponseFile(
                 userImage.getName(),
                 fileDownloadUri,
                 userImage.getType(),
@@ -70,17 +72,21 @@ public class UserImageController {
     }
 
     @PutMapping("/userImage/{email}/update")
-    public int updateUserImage(@RequestParam("data") MultipartFile file, @PathVariable String email) {
+    public ResponseEntity<UserImageResponseMessage> updateUserImage(@RequestParam("data") MultipartFile file,
+                                                                    @PathVariable String email) {
+        String message = "";
         try {
             userImageService.updateImageFile(file, email);
-            return Response.SC_OK;
+            message = "Updated the file successfully: " + file.getOriginalFilename();
+            return ResponseEntity.status(HttpStatus.OK).body(new UserImageResponseMessage(message));
         } catch (Exception e) {
-            return Response.SC_BAD_GATEWAY;
+            message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new UserImageResponseMessage(message));
         }
     }
 
     @DeleteMapping("/userImage/{email}")
-    public void removeUserImage(@PathVariable String email) {
+    public void removeUserImage(@PathVariable String email) throws EntityNotFoundException {
         userImageService.deleteImageFile(email);
     }
 }

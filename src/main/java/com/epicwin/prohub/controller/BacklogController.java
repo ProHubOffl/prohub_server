@@ -1,5 +1,6 @@
 package com.epicwin.prohub.controller;
 
+import com.epicwin.prohub.exception.EntityNotFoundException;
 import com.epicwin.prohub.model.backlog.Backlog;
 import com.epicwin.prohub.service.BacklogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +35,10 @@ public class BacklogController {
      *
      * @param backlogId backlog id
      * @return backlog entity
+     * @throws EntityNotFoundException when requested backlog entity not found
      */
     @GetMapping("/backlog/{backlogId}")
-    public Backlog getBackLogByBackLogId(@PathVariable("backlogId") int backlogId) {
+    public Backlog getBackLogByBackLogId(@PathVariable("backlogId") int backlogId) throws EntityNotFoundException {
         return backlogService.getBacklogByBacklogId(backlogId);
     }
 
@@ -46,10 +48,11 @@ public class BacklogController {
      * @param projectName project name
      * @param backlogId   backlog id
      * @return backlog entity
+     * @throws EntityNotFoundException when requested backlog entity not found
      */
     @GetMapping("/{projectName}/backlog/{backlogId}")
     public Backlog getBacklogByProjectNameAndBacklogId(@PathVariable("projectName") String projectName,
-                                                       @PathVariable("backlogId") int backlogId) {
+                                           @PathVariable("backlogId") int backlogId) throws EntityNotFoundException {
         return backlogService.getBacklogByBacklogIdAndProjectName(backlogId, projectName);
     }
 
@@ -70,9 +73,11 @@ public class BacklogController {
      * @param backlogId backlog id
      * @param backlog   updated backlog entity
      * @return updated backlog entity
+     * @throws EntityNotFoundException when requested backlog entity not found
      */
     @PutMapping("/backlog/{backlogId}")
-    public Backlog updateBacklogItem(@PathVariable("backlogId") int backlogId, @RequestBody Backlog backlog) {
+    public Backlog updateBacklogItem(@PathVariable("backlogId") int backlogId,
+                                     @RequestBody Backlog backlog) throws EntityNotFoundException {
         return backlogService.updateBacklog(backlogId, backlog);
     }
 
@@ -80,10 +85,10 @@ public class BacklogController {
      * Used for deleting a backlog item.
      *
      * @param backlogId backlog id
-     * @throws Exception when requested backlog entity not found
+     * @throws EntityNotFoundException when requested backlog entity not found
      */
     @DeleteMapping("/backlog/{backlogId}")
-    public void deleteBacklogItem(@PathVariable("backlogId") int backlogId) throws Exception {
+    public void deleteBacklogItem(@PathVariable("backlogId") int backlogId) throws EntityNotFoundException {
         backlogService.deleteBacklogItem(backlogId);
     }
 }

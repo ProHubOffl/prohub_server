@@ -1,5 +1,6 @@
 package com.epicwin.prohub.service;
 
+import com.epicwin.prohub.exception.EntityNotFoundException;
 import com.epicwin.prohub.model.backlog.BacklogComment;
 import com.epicwin.prohub.repo.BacklogCommentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,15 @@ public class BacklogCommentService {
      *
      * @param commentId comment id
      * @return backlog comment entity
+     * @throws EntityNotFoundException when requested backlog comment entity not found
      */
-    public BacklogComment getBacklogCommentByCommentId(int commentId) {
-        return backlogCommentRepo.findBacklogCommentByCommentId(commentId);
+    public BacklogComment getBacklogCommentByCommentId(int commentId) throws EntityNotFoundException {
+        BacklogComment backlogComment = backlogCommentRepo.findBacklogCommentByCommentId(commentId);
+        if (Objects.isNull(backlogComment)) {
+            throw new EntityNotFoundException("Requested Backlog Comment Entity Not Found");
+        } else {
+            return backlogComment;
+        }
     }
 
     /**
@@ -53,22 +60,29 @@ public class BacklogCommentService {
      * @param commentId      comment id
      * @param backlogComment modified backlog comment entity
      * @return updated backlog comment entity
+     * @throws EntityNotFoundException when requested backlog comment entity not found
      */
-    public BacklogComment updateBacklogComment(int commentId, BacklogComment backlogComment) {
-        backlogComment.setCommentId(commentId);
-        return backlogCommentRepo.save(backlogComment);
+    public BacklogComment updateBacklogComment(int commentId, BacklogComment backlogComment)
+            throws EntityNotFoundException {
+        BacklogComment oldBacklogComment = backlogCommentRepo.findBacklogCommentByCommentId(commentId);
+        if (Objects.isNull(oldBacklogComment)) {
+            throw new EntityNotFoundException("Requested Backlog Comment Entity Not Found");
+        } else {
+            backlogComment.setCommentId(commentId);
+            return backlogCommentRepo.save(backlogComment);
+        }
     }
 
     /**
      * Used for deleting a backlog comment.
      *
      * @param commentId comment id
-     * @throws Exception when requested backlog comment not found
+     * @throws EntityNotFoundException when requested backlog comment entity not found
      */
-    public void deleteBacklogComment(int commentId) throws Exception {
+    public void deleteBacklogComment(int commentId) throws EntityNotFoundException {
         BacklogComment backlogComment = getBacklogCommentByCommentId(commentId);
         if (Objects.isNull(backlogComment)) {
-            throw new Exception("Requested Backlog Comment Entity Not found");
+            throw new EntityNotFoundException("Requested Backlog Comment Entity Not found");
         } else {
             backlogCommentRepo.delete(backlogComment);
         }
