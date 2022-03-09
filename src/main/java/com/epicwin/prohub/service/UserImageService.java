@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Service class for handling user image operations.
@@ -18,15 +20,32 @@ public class UserImageService {
     @Autowired
     UserImageRepo userImageRepo;
 
-    public UserImage store(MultipartFile file, String email) throws IOException {
+    public UserImage saveImageFile(MultipartFile file, String email) throws IOException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         UserImage userImage = new UserImage(fileName, file.getContentType(), file.getBytes(), email);
 
         return userImageRepo.save(userImage);
     }
 
-    public UserImage getFile(String email) {
+    public UserImage getImageFile(String email) {
         return userImageRepo.findUserImageByEmail(email);
     }
 
+    public UserImage updateImageFile(MultipartFile file, String email) throws IOException {
+        UserImage userImage = getImageFile(email);
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        if(Objects.isNull(userImage)) {
+            UserImage newUserImage = new UserImage(fileName, file.getContentType(), file.getBytes(), email);
+            return userImageRepo.save(newUserImage);
+        } else {
+            userImage.setData(file.getBytes());
+            userImage.setType(file.getContentType());
+            userImage.setName(fileName);
+            return userImageRepo.save(userImage);
+        }
+    }
+
+    public void deleteImageFile(String email) {
+        userImageRepo.deleteUserImageByEmail(email);
+    }
 }

@@ -7,9 +7,7 @@ import com.epicwin.prohub.service.UserImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -19,7 +17,7 @@ import java.util.Base64;
 /**
  * Controller class for handling user image operations.
  */
-@Controller
+@RestController
 @CrossOrigin
 public class UserImageController {
 
@@ -31,7 +29,7 @@ public class UserImageController {
                                                                @PathVariable String email) {
         String message = "";
         try {
-            userImageService.store(file, email);
+            userImageService.saveImageFile(file, email);
 
             message = "Uploaded the file successfully: " + file.getOriginalFilename();
             return ResponseEntity.status(HttpStatus.OK).body(new UserImageResponseMessage(message));
@@ -43,7 +41,7 @@ public class UserImageController {
 
     @GetMapping("userImage/{email}/download")
     public ResponseEntity<byte[]> getFile(@PathVariable String email) {
-        UserImage userImage  = userImageService.getFile(email);
+        UserImage userImage  = userImageService.getImageFile(email);
         byte[] base64encodedData = Base64.getEncoder().encode(userImage.getData());
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + userImage.getName() + "\"")
@@ -53,7 +51,7 @@ public class UserImageController {
     @GetMapping("userImage/{email}")
     public ResponseEntity<UserImageResponseFile> getUserImageData(@PathVariable String email) {
 
-        UserImage userImage = userImageService.getFile(email);
+        UserImage userImage = userImageService.getImageFile(email);
         String fileDownloadUri = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
                 .path("/userImage/")
@@ -68,5 +66,25 @@ public class UserImageController {
                 userImage.getData().length);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseFile);
+    }
+
+    @PutMapping("/userImage/{email}/update")
+    public ResponseEntity<UserImageResponseMessage> updateUserImage(@RequestParam("data") MultipartFile file,
+                                                                    @PathVariable String email) {
+        String message = "";
+        try {
+            userImageService.updateImageFile(file, email);
+
+            message = "Updated the file successfully: " + file.getOriginalFilename();
+            return ResponseEntity.status(HttpStatus.OK).body(new UserImageResponseMessage(message));
+        } catch (Exception e) {
+            message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new UserImageResponseMessage(message));
+        }
+    }
+
+    @DeleteMapping("/userImage/{email}")
+    public void removeUserImage(@PathVariable String email) {
+        userImageService.deleteImageFile(email);
     }
 }
