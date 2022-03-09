@@ -36,7 +36,7 @@ public class ProjectController {
      * @return all projects
      */
     @GetMapping("/project")
-    public List<Project> getAllProjects() throws EntityNotFoundException {
+    public List<Project> getAllProjects() {
         return projectService.getAllProjects();
     }
 
@@ -45,9 +45,10 @@ public class ProjectController {
      *
      * @param projectName
      * @return deleted project
+     * @throws EntityNotFoundException when requested project entity not found
      */
     @DeleteMapping("/project/{projectName}")
-    public void deleteProject(@PathVariable("projectName") String projectName) {
+    public void deleteProject(@PathVariable("projectName") String projectName) throws EntityNotFoundException {
         projectService.deleteProject(projectName);
     }
 
@@ -56,9 +57,11 @@ public class ProjectController {
      *
      * @param projectName
      * @return updated project
+     * @throws EntityNotFoundException when requested project entity not found
      */
     @PutMapping("/project/{projectName}")
-    public Project updateProject(@RequestBody UpdatedProject updatedProject, @PathVariable("projectName") String projectName) {
+    public Project updateProject(@RequestBody UpdatedProject updatedProject,
+                                 @PathVariable("projectName") String projectName) throws EntityNotFoundException {
         return projectService.updateProject(updatedProject, projectName);
     }
 
@@ -67,6 +70,7 @@ public class ProjectController {
      *
      * @param projectName
      * @return project
+     * @throws EntityNotFoundException when requested project entity not found
      */
     @GetMapping("/project/{projectName}")
     public Project getProjectByProjectName(@PathVariable("projectName") String projectName) throws EntityNotFoundException {

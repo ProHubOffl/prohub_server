@@ -1,5 +1,6 @@
 package com.epicwin.prohub.controller;
 
+import com.epicwin.prohub.exception.EntityNotFoundException;
 import com.epicwin.prohub.model.project.ProjectUserRole;
 import com.epicwin.prohub.model.project.UserRole;
 import com.epicwin.prohub.service.ProjectUserRoleService;
@@ -36,10 +37,11 @@ public class ProjectUserRoleController {
      * @param email       user email
      * @param projectName project name
      * @return user role based on project name and user email
+     * @throws EntityNotFoundException when requested user role entity not found
      */
     @GetMapping("/{email}/projectUserRole/{projectName}")
     public ProjectUserRole getUserRoleByProjectNameAndEmail(@PathVariable("email") String email,
-                                                            @PathVariable("projectName") String projectName) {
+                                    @PathVariable("projectName") String projectName) throws EntityNotFoundException {
         return projectUserRoleService.getUserRoleByProjectNameAndEmail(projectName, email);
     }
 
@@ -61,10 +63,11 @@ public class ProjectUserRoleController {
      * @param email       email
      * @param projectName project name
      * @return updated project user role
+     * @throws EntityNotFoundException when requested user role entity not found
      */
     @PutMapping("/{email}/projectUserRole/{projectName}")
     public ProjectUserRole updateProjectUserRole(@RequestBody UserRole userRole, @PathVariable("email") String email,
-                                                 @PathVariable("projectName") String projectName) {
+                                     @PathVariable("projectName") String projectName) throws EntityNotFoundException {
         return projectUserRoleService.updateUserRoleInProject(projectName, email, userRole);
     }
 
@@ -73,9 +76,11 @@ public class ProjectUserRoleController {
      *
      * @param email       email
      * @param projectName project name
+     * @throws EntityNotFoundException when requested user role entity not found
      */
     @DeleteMapping("/{email}/projectUserRole/{projectName}")
-    public void removeUserFromProject(@PathVariable("email") String email, @PathVariable("projectName") String projectName) {
+    public void removeUserFromProject(@PathVariable("email") String email,
+                                      @PathVariable("projectName") String projectName) throws EntityNotFoundException {
         projectUserRoleService.removeUserFromProject(projectName, email);
     }
 }

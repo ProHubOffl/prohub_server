@@ -33,13 +33,8 @@ public class ProjectService {
      *
      * @return all projects
      */
-    public List<Project> getAllProjects() throws EntityNotFoundException {
-
-        List<Project> projects =  projectRepo.findAll();
-        if(projects.isEmpty()) {
-            throw new EntityNotFoundException("Unable to retrieve the list of projects");
-        }
-        return projects;
+    public List<Project> getAllProjects() {
+        return projectRepo.findAll();
     }
 
     /**
@@ -47,27 +42,39 @@ public class ProjectService {
      *
      * @param projectName
      * @return deleted project
+     * @throws EntityNotFoundException when requested project entity not found
      */
-    public void deleteProject(String projectName) {
-        projectRepo.deleteProjectByProjectName(projectName);
+    public void deleteProject(String projectName) throws EntityNotFoundException {
+        Project project = projectRepo.findProjectByProjectName(projectName);
+        if (Objects.isNull(project)) {
+            throw new EntityNotFoundException("Requested Project Details Not Found");
+        } else {
+            projectRepo.deleteProjectByProjectName(projectName);
+        }
     }
 
     /**
-     * Used to Update a Project
+     * Used to update a project
      *
-     * @param projectName
+     * @param updatedProject updated project
+     * @param projectName    project name
      * @return updated project
+     * @throws EntityNotFoundException when requested project entity not found
      */
-    public Project updateProject(UpdatedProject updatedProject,String projectName) {
+    public Project updateProject(UpdatedProject updatedProject, String projectName) throws EntityNotFoundException {
         Project project = projectRepo.findProjectByProjectName(projectName);
-        project.setTeamName(updatedProject.getTeamName());
-        project.setProjectDescription(updatedProject.getProjectDescription());
-        project.setProjectType(updatedProject.getProjectType());
-        project.setStoryPoints(updatedProject.getStoryPoints());
-        project.setTotalSprints(updatedProject.getTotalSprints());
-        project.setStartDate(updatedProject.getStartDate());
-        project.setEndDate(updatedProject.getEndDate());
-        return projectRepo.save(project);
+        if (Objects.isNull(project)) {
+            throw new EntityNotFoundException("Requested Project Details Not Found");
+        } else {
+            project.setTeamName(updatedProject.getTeamName());
+            project.setProjectDescription(updatedProject.getProjectDescription());
+            project.setProjectType(updatedProject.getProjectType());
+            project.setStoryPoints(updatedProject.getStoryPoints());
+            project.setTotalSprints(updatedProject.getTotalSprints());
+            project.setStartDate(updatedProject.getStartDate());
+            project.setEndDate(updatedProject.getEndDate());
+            return projectRepo.save(project);
+        }
     }
 
     /**
@@ -75,10 +82,11 @@ public class ProjectService {
      *
      * @param projectName
      * @return project
+     * @throws EntityNotFoundException when requested project entity not found
      */
     public Project getProjectByProjectName(String projectName) throws EntityNotFoundException {
         Project project = projectRepo.findProjectByProjectName(projectName);
-        if(Objects.isNull(project)) {
+        if (Objects.isNull(project)) {
             throw new EntityNotFoundException("Requested Project Details Not Found");
         }
         return project;

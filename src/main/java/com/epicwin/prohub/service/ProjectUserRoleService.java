@@ -1,5 +1,6 @@
 package com.epicwin.prohub.service;
 
+import com.epicwin.prohub.exception.EntityNotFoundException;
 import com.epicwin.prohub.model.project.ProjectUserRole;
 import com.epicwin.prohub.model.project.UserRole;
 import com.epicwin.prohub.repo.ProjectUserRoleRepo;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Service class for handling project user role operations.
@@ -33,9 +35,16 @@ public class ProjectUserRoleService {
      * @param projectName project name
      * @param email       user name
      * @return user role based on project name and user email
+     * @throws EntityNotFoundException when requested user role entity not found
      */
-    public ProjectUserRole getUserRoleByProjectNameAndEmail(String projectName, String email) {
-        return projectUserRoleRepo.findByProjectNameAndEmail(projectName, email);
+    public ProjectUserRole getUserRoleByProjectNameAndEmail(String projectName, String email)
+            throws EntityNotFoundException {
+        ProjectUserRole projectUserRole = projectUserRoleRepo.findByProjectNameAndEmail(projectName, email);
+        if (Objects.isNull(projectUserRole)) {
+            throw new EntityNotFoundException("Requested Project User Role Entity Not Found");
+        } else {
+            return projectUserRoleRepo.findByProjectNameAndEmail(projectName, email);
+        }
     }
 
     /**
@@ -53,9 +62,15 @@ public class ProjectUserRoleService {
      *
      * @param projectName project name
      * @param email       email
+     * @throws EntityNotFoundException when requested user role entity not found
      */
-    public void removeUserFromProject(String projectName, String email) {
-        projectUserRoleRepo.deleteByProjectNameAndEmail(projectName, email);
+    public void removeUserFromProject(String projectName, String email) throws EntityNotFoundException {
+        ProjectUserRole projectUserRole = projectUserRoleRepo.findByProjectNameAndEmail(projectName, email);
+        if (Objects.isNull(projectUserRole)) {
+            throw new EntityNotFoundException("Requested Project User Role Entity Not Found");
+        } else {
+            projectUserRoleRepo.deleteByProjectNameAndEmail(projectName, email);
+        }
     }
 
     /**
@@ -65,10 +80,16 @@ public class ProjectUserRoleService {
      * @param email       email
      * @param userRole    user role
      * @return updated project user role entity
+     * @throws EntityNotFoundException when requested user role entity not found
      */
-    public ProjectUserRole updateUserRoleInProject(String projectName, String email, UserRole userRole) {
+    public ProjectUserRole updateUserRoleInProject(String projectName, String email, UserRole userRole)
+            throws EntityNotFoundException {
         ProjectUserRole projectUserRole = projectUserRoleRepo.findByProjectNameAndEmail(projectName, email);
-        projectUserRole.setRole(userRole.getRole());
-        return projectUserRoleRepo.save(projectUserRole);
+        if (Objects.isNull(projectUserRole)) {
+            throw new EntityNotFoundException("Requested Project User Role Entity Not Found");
+        } else {
+            projectUserRole.setRole(userRole.getRole());
+            return projectUserRoleRepo.save(projectUserRole);
+        }
     }
 }
