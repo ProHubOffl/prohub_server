@@ -4,6 +4,7 @@ import com.epicwin.prohub.model.userImage.UserImage;
 import com.epicwin.prohub.model.userImage.UserImageResponseFile;
 import com.epicwin.prohub.model.userImage.UserImageResponseMessage;
 import com.epicwin.prohub.service.UserImageService;
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -69,17 +70,12 @@ public class UserImageController {
     }
 
     @PutMapping("/userImage/{email}/update")
-    public ResponseEntity<UserImageResponseMessage> updateUserImage(@RequestParam("data") MultipartFile file,
-                                                                    @PathVariable String email) {
-        String message = "";
+    public int updateUserImage(@RequestParam("data") MultipartFile file, @PathVariable String email) {
         try {
             userImageService.updateImageFile(file, email);
-
-            message = "Updated the file successfully: " + file.getOriginalFilename();
-            return ResponseEntity.status(HttpStatus.OK).body(new UserImageResponseMessage(message));
+            return Response.SC_OK;
         } catch (Exception e) {
-            message = "Could not upload the file: " + file.getOriginalFilename() + "!";
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new UserImageResponseMessage(message));
+            return Response.SC_BAD_GATEWAY;
         }
     }
 
