@@ -5,6 +5,7 @@ import com.epicwin.prohub.repo.AnnouncementRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,22 +31,34 @@ public class AnnouncementService {
     /**
      * Used for getting Announcement by announcement id.
      *
-     * @param announcement_Id announcement id
+     * @param announcementId announcement id
      * @return Announcement entity
+     * @throws EntityNotFoundException when requested Announcement entity not found
      */
-    public Announcement getAnnouncementByAnnouncementId(int announcement_Id) {
-        return announcementRepo.FindByAnnouncementId(announcement_Id);
+    public Announcement getAnnouncementByAnnouncementId(int announcementId) throws EntityNotFoundException {
+        Announcement announcement = announcementRepo.findAnnouncementByAnnouncementId(announcementId);
+        if (Objects.isNull(announcement)) {
+            throw new EntityNotFoundException("Requested Announcement Entity Not Found");
+        } else {
+            return announcement;
+        }
     }
 
     /**
      * Used for getting Announcement by announcement id and project name.
      *
-     * @param announcement_Id   Announcement id
+     * @param announcementId   Announcement id
      * @param projectName project name
      * @return Announcement entity
+     * @throws EntityNotFoundException when requested Announcement entity not found
      */
-    public Announcement getAnnouncementByAnnouncementIdAndProjectName(int announcement_Id, String projectName) {
-        return announcementRepo.findAnnouncementByAnnouncementIdAndProjectName(announcement_Id, projectName);
+    public Announcement getAnnouncementByAnnouncementIdAndProjectName(int announcementId, String projectName) throws EntityNotFoundException {
+        Announcement announcement = announcementRepo.findAnnouncementByAnnouncementIdAndProjectName(announcementId, projectName);
+        if (Objects.isNull(announcement)) {
+            throw new EntityNotFoundException("Requested Announcement Entity Not Found");
+        } else {
+            return announcement;
+        }
     }
 
     /**
@@ -61,27 +74,34 @@ public class AnnouncementService {
     /**
      * Used for updating Announcement.
      *
-     * @param announcement_Id Announcement id
+     * @param announcementId Announcement id
      * @param announcement updated Announcement entity
      * @return updated Announcement entity
+     * @throws EntityNotFoundException when requested Announcement entity not found
      */
-    public Announcement updateAnnouncementItem(int announcement_Id, Announcement announcement) {
-        announcement.setAnnouncement_Id(announcement_Id);
-        return announcementRepo.save(announcement);
+    public Announcement updateAnnouncementItem(int announcementId, Announcement announcement) throws EntityNotFoundException {
+
+        Announcement oldAnnouncement = getAnnouncementByAnnouncementId(announcementId);
+        if (Objects.isNull(oldAnnouncement)) {
+            throw new EntityNotFoundException("Requested Announcement Entity Not Found");
+        } else {
+            announcement.setAnnouncementId(announcementId);
+            return announcementRepo.save(announcement);
+        }
     }
 
     /**
      * Used for deleting Announcement.
      *
-     * @param announcement_Id Announcement id
-     * @throws Exception when requested Announcement entity not found
+     * @param announcementId Announcement id
+     * @throws EntityNotFoundException when requested Announcement entity not found
      */
-    public void deleteAnnouncementItem(int announcement_Id) throws Exception {
-        Announcement announcement = getAnnouncementByAnnouncementId(announcement_Id);
+    public void deleteAnnouncementItem(int announcementId) throws EntityNotFoundException  {
+        Announcement announcement = getAnnouncementByAnnouncementId(announcementId);
         if (!Objects.isNull(announcement)) {
             announcementRepo.delete(announcement);
         } else {
-            throw new Exception("Requested Entity not found");
+            throw new EntityNotFoundException ("Requested Announcement Entity Not Found");
         }
     }
 

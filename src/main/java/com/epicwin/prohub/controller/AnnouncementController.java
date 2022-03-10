@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 /**
@@ -32,25 +33,27 @@ public class AnnouncementController {
     /**
      * Used for getting Announcement based on announcement id.
      *
-     * @param announcement_Id announcement id
+     * @param announcementId announcement id
      * @return Announcement entity
+     * @throws EntityNotFoundException when requested Announcement entity not found
      */
     @GetMapping("/announcement/{announcementId}")
-    public Announcement getAnnouncementByAnnouncementId(@PathVariable("announcementId") int announcement_Id) {
-        return announcementService.getAnnouncementByAnnouncementId(announcement_Id);
+    public Announcement getAnnouncementByAnnouncementId(@PathVariable("announcementId") int announcementId) throws EntityNotFoundException {
+        return announcementService.getAnnouncementByAnnouncementId(announcementId);
     }
 
     /**
      * Used for getting Announcement based on announcement id and project name.
      *
      * @param projectName project name
-     * @param announcement_Id   announcement id
+     * @param announcementId   announcement id
      * @return Announcement entity
+     * @throws EntityNotFoundException when requested Announcement entity not found
      */
     @GetMapping("/{projectName}/announcement/{announcementId}")
     public Announcement getAnnouncementByAnnouncementIdAndProjectName(@PathVariable("projectName") String projectName,
-                                                       @PathVariable("announcementId") int announcement_Id) {
-        return announcementService.getAnnouncementByAnnouncementIdAndProjectName(announcement_Id, projectName);
+                                                       @PathVariable("announcementId") int announcementId) throws EntityNotFoundException {
+        return announcementService.getAnnouncementByAnnouncementIdAndProjectName(announcementId, projectName);
     }
 
     /**
@@ -67,23 +70,24 @@ public class AnnouncementController {
     /**
      * Used for updating an Announcement item.
      *
-     * @param announcement_Id Announcement id
+     * @param announcementId Announcement id
      * @param announcement updated Announcement entity
      * @return updated Announcement entity
+     * @throws EntityNotFoundException when requested Announcement entity not found
      */
     @PutMapping("/announcement/{announcementId}")
-    public Announcement updateAnnouncementItem(@PathVariable("announcementId") int announcement_Id, @RequestBody Announcement announcement) {
-        return announcementService.updateAnnouncementItem(announcement_Id, announcement);
+    public Announcement updateAnnouncementItem(@PathVariable("announcementId") int announcementId, @RequestBody Announcement announcement) throws EntityNotFoundException {
+        return announcementService.updateAnnouncementItem(announcementId, announcement);
     }
 
     /**
      * Used for deleting an Announcement item.
      *
-     * @param announcement_Id Announcement id
-     * @throws Exception when requested Announcement entity not found
+     * @param announcementId Announcement id
+     * @throws EntityNotFoundException when requested Announcement entity not found
      */
     @DeleteMapping("/announcement/{announcementId}")
-    public void deleteAnnouncementItem(@PathVariable("announcementId") int announcement_Id) throws Exception {
-        announcementService.deleteAnnouncementItem(announcement_Id);
+    public void deleteAnnouncementItem(@PathVariable("announcementId") int announcementId) throws EntityNotFoundException {
+        announcementService.deleteAnnouncementItem(announcementId);
     }
 }
