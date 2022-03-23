@@ -49,6 +49,9 @@ public class Document {
         this.updatedDate = updatedDate;
     }
 
+    public Document(String projectName, String title, String description, String author, String documentName, String contentType, byte[] bytes, Date createdDate, Date updatedDate) {
+    }
+
     public int getAnnouncementId() {
         return documentId;
     }
