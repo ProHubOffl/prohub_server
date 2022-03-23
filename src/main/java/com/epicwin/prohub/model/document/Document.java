@@ -12,7 +12,7 @@ public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "document_Id")
-    private int announcementId;
+    private int documentId;
     @Column(name = "project_name")
     private String projectName;
     @Column(name = "title")
@@ -37,7 +37,7 @@ public class Document {
     }
 
     public Document(int announcementId, String projectName, String title, String description, String author, String name, String type, byte[] data, Date createdDate, Date updatedDate) {
-        this.announcementId = announcementId;
+        this.documentId = announcementId;
         this.projectName = projectName;
         this.title = title;
         this.description = description;
@@ -50,11 +50,11 @@ public class Document {
     }
 
     public int getAnnouncementId() {
-        return announcementId;
+        return documentId;
     }
 
     public void setAnnouncementId(int announcementId) {
-        this.announcementId = announcementId;
+        this.documentId = announcementId;
     }
 
     public String getProjectName() {
