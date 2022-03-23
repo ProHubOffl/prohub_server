@@ -31,6 +31,17 @@ public class ProjectUserRoleController {
     }
 
     /**
+     * Used for getting a list of users assigned to a particular project.
+     *
+     * @param projectName project
+     * @return a list of users assigned for a particular project
+     */
+    @GetMapping("/projectUserRole/{projectName}")
+    public List<ProjectUserRole> getUsersByProject(@PathVariable("projectName") String projectName) {
+        return projectUserRoleService.getUsersByProject(projectName);
+    }
+
+    /**
      * Used for getting user role by project name and user email.
      *
      * @param email       user email

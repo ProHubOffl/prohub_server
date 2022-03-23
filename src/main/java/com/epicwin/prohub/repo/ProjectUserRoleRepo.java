@@ -18,4 +18,6 @@ public interface ProjectUserRoleRepo extends JpaRepository<ProjectUserRole, Proj
     void deleteByProjectNameAndEmail(String projectName, String email);
 
     ProjectUserRole findByProjectNameAndEmail(String projectName, String email);
+
+    List<ProjectUserRole> findAllByProjectName(String projectName);
 }

@@ -28,6 +28,16 @@ public class ProjectUserRoleService {
     }
 
     /**
+     * Used to get a list of project user roles for a project.
+     *
+     * @param projectName project name
+     * @return a list of project user roles for the given project
+     */
+    public List<ProjectUserRole> getUsersByProject(String projectName) {
+        return projectUserRoleRepo.findAllByProjectName(projectName);
+    }
+
+    /**
      * Used for getting user role by project name and user email.
      *
      * @param projectName project name
