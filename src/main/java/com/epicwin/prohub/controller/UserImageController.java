@@ -1,5 +1,6 @@
 package com.epicwin.prohub.controller;
 
+import com.epicwin.prohub.exception.EntityNotFoundException;
 import com.epicwin.prohub.model.userImage.UserImage;
 import com.epicwin.prohub.model.userImage.UserImageResponseFile;
 import com.epicwin.prohub.model.userImage.UserImageResponseMessage;
@@ -41,16 +42,18 @@ public class UserImageController {
     }
 
     @GetMapping("userImage/{email}/download")
-    public ResponseEntity<byte[]> getFile(@PathVariable String email) {
-        UserImage userImage  = userImageService.getImageFile(email);
+    public ResponseEntity<byte[]> getFile(@PathVariable String email) throws EntityNotFoundException {
+        UserImage userImage = userImageService.getImageFile(email);
         byte[] base64encodedData = Base64.getEncoder().encode(userImage.getData());
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + userImage.getName() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""
+                        + userImage.getName() + "\"")
                 .body(base64encodedData);
     }
 
     @GetMapping("userImage/{email}")
-    public ResponseEntity<UserImageResponseFile> getUserImageData(@PathVariable String email) {
+    public ResponseEntity<UserImageResponseFile> getUserImageData(@PathVariable String email)
+            throws EntityNotFoundException {
 
         UserImage userImage = userImageService.getImageFile(email);
         String fileDownloadUri = ServletUriComponentsBuilder
@@ -60,7 +63,7 @@ public class UserImageController {
                 .path("/download/")
                 .toUriString();
 
-        UserImageResponseFile responseFile =  new UserImageResponseFile(
+        UserImageResponseFile responseFile = new UserImageResponseFile(
                 userImage.getName(),
                 fileDownloadUri,
                 userImage.getType(),
@@ -80,7 +83,7 @@ public class UserImageController {
     }
 
     @DeleteMapping("/userImage/{email}")
-    public void removeUserImage(@PathVariable String email) {
+    public void removeUserImage(@PathVariable String email) throws EntityNotFoundException {
         userImageService.deleteImageFile(email);
     }
 }

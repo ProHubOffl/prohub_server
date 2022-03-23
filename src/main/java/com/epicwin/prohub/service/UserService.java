@@ -1,6 +1,7 @@
 package com.epicwin.prohub.service;
 
 
+import com.epicwin.prohub.exception.EntityNotFoundException;
 import com.epicwin.prohub.model.authentication.PasswordRequest;
 import com.epicwin.prohub.model.authentication.UpdatedUser;
 import com.epicwin.prohub.repo.UserRepo;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Service class for handling user operations.
@@ -47,26 +49,44 @@ public class UserService implements UserDetailsService {
         return userRepo.findAll();
     }
 
-    public User getUser(String email) {
-        return userRepo.findUserByEmail(email);
-    }
-
-    public void deleteUser(String email) {
-        userRepo.deleteUserByEmail(email);
-    }
-
-    public void updateUser(UpdatedUser updatedUser) {
-        User user = userRepo.findUserByEmail(updatedUser.getEmail());
-        user.setFirstName(updatedUser.getFirstName());
-        user.setLastName(updatedUser.getLastName());
-        user.setEmail(updatedUser.getEmail());
-        user.setDesignation(updatedUser.getDesignation());
-        userRepo.save(user);
-    }
-
-    public void changePassword(String email, PasswordRequest passwordRequest) {
+    public User getUser(String email) throws EntityNotFoundException {
         User user = userRepo.findUserByEmail(email);
-        user.setPassword(passwordEncoder.encode(passwordRequest.getPassword()));
-        userRepo.save(user);
+        if(Objects.isNull(user)) {
+            throw new EntityNotFoundException("Requested User Entity Not Found");
+        } else {
+            return userRepo.findUserByEmail(email);
+        }
+    }
+
+    public void deleteUser(String email) throws EntityNotFoundException {
+        User user = userRepo.findUserByEmail(email);
+        if(Objects.isNull(user)) {
+            throw new EntityNotFoundException("Requested User Entity Not Found");
+        } else {
+            userRepo.deleteUserByEmail(email);
+        }
+    }
+
+    public void updateUser(UpdatedUser updatedUser) throws EntityNotFoundException {
+        User user = userRepo.findUserByEmail(updatedUser.getEmail());
+        if(Objects.isNull(user)) {
+            throw new EntityNotFoundException("Requested User Entity Not Found");
+        } else {
+            user.setFirstName(updatedUser.getFirstName());
+            user.setLastName(updatedUser.getLastName());
+            user.setEmail(updatedUser.getEmail());
+            user.setDesignation(updatedUser.getDesignation());
+            userRepo.save(user);
+        }
+    }
+
+    public void changePassword(String email, PasswordRequest passwordRequest) throws EntityNotFoundException {
+        User user = userRepo.findUserByEmail(email);
+        if(Objects.isNull(user)) {
+            throw new EntityNotFoundException("Requested User Entity Not Found");
+        } else {
+            user.setPassword(passwordEncoder.encode(passwordRequest.getPassword()));
+            userRepo.save(user);
+        }
     }
 }

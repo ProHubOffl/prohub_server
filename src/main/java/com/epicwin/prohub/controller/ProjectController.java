@@ -1,5 +1,6 @@
 package com.epicwin.prohub.controller;
 
+import com.epicwin.prohub.exception.EntityNotFoundException;
 import com.epicwin.prohub.model.project.Project;
 import com.epicwin.prohub.model.project.UpdatedProject;
 import com.epicwin.prohub.service.ProjectService;
@@ -44,9 +45,10 @@ public class ProjectController {
      *
      * @param projectName
      * @return deleted project
+     * @throws EntityNotFoundException when requested project entity not found
      */
     @DeleteMapping("/project/{projectName}")
-    public void deleteProject(@PathVariable("projectName") String projectName) {
+    public void deleteProject(@PathVariable("projectName") String projectName) throws EntityNotFoundException {
         projectService.deleteProject(projectName);
     }
 
@@ -55,9 +57,11 @@ public class ProjectController {
      *
      * @param projectName
      * @return updated project
+     * @throws EntityNotFoundException when requested project entity not found
      */
     @PutMapping("/project/{projectName}")
-    public Project updateProject(@RequestBody UpdatedProject updatedProject, @PathVariable("projectName") String projectName) {
+    public Project updateProject(@RequestBody UpdatedProject updatedProject,
+                                 @PathVariable("projectName") String projectName) throws EntityNotFoundException {
         return projectService.updateProject(updatedProject, projectName);
     }
 
@@ -66,9 +70,10 @@ public class ProjectController {
      *
      * @param projectName
      * @return project
+     * @throws EntityNotFoundException when requested project entity not found
      */
     @GetMapping("/project/{projectName}")
-    public Project getProjectByProjectName(@PathVariable("projectName") String projectName) {
+    public Project getProjectByProjectName(@PathVariable("projectName") String projectName) throws EntityNotFoundException {
         return projectService.getProjectByProjectName(projectName);
     }
 

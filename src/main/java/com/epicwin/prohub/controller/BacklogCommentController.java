@@ -1,5 +1,6 @@
 package com.epicwin.prohub.controller;
 
+import com.epicwin.prohub.exception.EntityNotFoundException;
 import com.epicwin.prohub.model.backlog.BacklogComment;
 import com.epicwin.prohub.service.BacklogCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +35,11 @@ public class BacklogCommentController {
      *
      * @param backlogCommentId backlog comment id
      * @return backlog comment entity
+     * @throws EntityNotFoundException when requested backlog comment entity not found
      */
     @GetMapping("/backlogComment/{backlogCommentId}")
-    public BacklogComment getBacklogCommentByCommentId(@PathVariable("backlogCommentId") int backlogCommentId) {
+    public BacklogComment getBacklogCommentByCommentId(@PathVariable("backlogCommentId") int backlogCommentId)
+            throws EntityNotFoundException {
         return backlogCommentService.getBacklogCommentByCommentId(backlogCommentId);
     }
 
@@ -57,10 +60,11 @@ public class BacklogCommentController {
      * @param backlogCommentId backlog comment id
      * @param backlogComment   modified backlog comment
      * @return updated backlog comment
+     * @throws EntityNotFoundException when requested backlog comment entity not found
      */
     @PutMapping("/backlogComment/{backlogCommentId}")
     public BacklogComment updateBacklogComment(@PathVariable("backlogCommentId") int backlogCommentId,
-                                               @RequestBody BacklogComment backlogComment) {
+                                               @RequestBody BacklogComment backlogComment) throws EntityNotFoundException {
         return backlogCommentService.updateBacklogComment(backlogCommentId, backlogComment);
     }
 
@@ -68,10 +72,11 @@ public class BacklogCommentController {
      * Used for deleting a backlog comment.
      *
      * @param backlogCommentId backlog comment id
-     * @throws Exception when requested backlog comment not found
+     * @throws EntityNotFoundException when requested backlog comment entity not found
      */
     @DeleteMapping("/backlogComment/{backlogCommentId}")
-    public void deleteBacklogComment(@PathVariable("backlogCommentId") int backlogCommentId) throws Exception {
+    public void deleteBacklogComment(@PathVariable("backlogCommentId") int backlogCommentId)
+            throws EntityNotFoundException {
         backlogCommentService.deleteBacklogComment(backlogCommentId);
     }
 }

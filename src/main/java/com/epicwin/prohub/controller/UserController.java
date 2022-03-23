@@ -1,6 +1,7 @@
 package com.epicwin.prohub.controller;
 
 import com.epicwin.prohub.configuration.JwtTokenUtil;
+import com.epicwin.prohub.exception.EntityNotFoundException;
 import com.epicwin.prohub.model.authentication.*;
 import com.epicwin.prohub.model.email.EmailRequest;
 import com.epicwin.prohub.model.email.Mail;
@@ -55,7 +56,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public int register(@RequestBody User user) {
+    public int register(@RequestBody User user) throws EntityNotFoundException {
         User user1 = userService.getUser(user.getEmail());
         if (Objects.isNull(user1)) {
             userService.saveUser(user);
@@ -85,29 +86,32 @@ public class UserController {
         List<UpdatedUser> publicUsers = new ArrayList<>();
         for (int i = 0; i < users.size(); i++) {
             User tempUser = users.get(i);
-            publicUsers.add(new UpdatedUser(tempUser.getFirstName(), tempUser.getLastName(), tempUser.getEmail(), tempUser.getDesignation()));
+            publicUsers.add(new UpdatedUser(tempUser.getFirstName(), tempUser.getLastName(),
+                    tempUser.getEmail(), tempUser.getDesignation()));
         }
         return publicUsers;
     }
 
     @GetMapping("/users/{email}")
-    public UpdatedUser getUser(@PathVariable String email) {
+    public UpdatedUser getUser(@PathVariable String email) throws EntityNotFoundException {
         User user = userService.getUser(email);
         return new UpdatedUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getDesignation());
     }
 
     @PutMapping("/users/{email}")
-    public void updateUser(@RequestBody UpdatedUser updatedUser, @PathVariable String email) {
+    public void updateUser(@RequestBody UpdatedUser updatedUser,
+                           @PathVariable String email) throws EntityNotFoundException {
         userService.updateUser(updatedUser);
     }
 
     @DeleteMapping("/users/{email}")
-    public void deleteUser(@PathVariable String email) {
+    public void deleteUser(@PathVariable String email) throws EntityNotFoundException {
         userService.deleteUser(email);
     }
 
     @PutMapping("/changePassword/{email}")
-    public int changePassword(@RequestBody ChangePasswordRequest passwordRequest, @PathVariable String email) {
+    public int changePassword(@RequestBody ChangePasswordRequest passwordRequest,
+                              @PathVariable String email) throws EntityNotFoundException {
         User user = userService.getUser(email);
         if (Objects.isNull(user)) {
             return Response.SC_BAD_REQUEST;
@@ -130,7 +134,7 @@ public class UserController {
     }
 
     @PostMapping("/forgotPassword")
-    public int handleForgotPassword(@RequestBody EmailRequest emailRequest) {
+    public int handleForgotPassword(@RequestBody EmailRequest emailRequest) throws EntityNotFoundException {
         User user = userService.getUser(emailRequest.getEmail());
         if (Objects.isNull(user)) {
             return Response.SC_BAD_REQUEST;

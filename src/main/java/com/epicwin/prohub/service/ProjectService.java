@@ -1,5 +1,6 @@
 package com.epicwin.prohub.service;
 
+import com.epicwin.prohub.exception.EntityNotFoundException;
 import com.epicwin.prohub.model.project.Project;
 import com.epicwin.prohub.model.project.UpdatedProject;
 import com.epicwin.prohub.repo.ProjectRepo;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Service class for handling project operations.
@@ -40,27 +42,39 @@ public class ProjectService {
      *
      * @param projectName
      * @return deleted project
+     * @throws EntityNotFoundException when requested project entity not found
      */
-    public void deleteProject(String projectName) {
-        projectRepo.deleteProjectByProjectName(projectName);
+    public void deleteProject(String projectName) throws EntityNotFoundException {
+        Project project = projectRepo.findProjectByProjectName(projectName);
+        if (Objects.isNull(project)) {
+            throw new EntityNotFoundException("Requested Project Details Not Found");
+        } else {
+            projectRepo.deleteProjectByProjectName(projectName);
+        }
     }
 
     /**
-     * Used to Update a Project
+     * Used to update a project
      *
-     * @param projectName
+     * @param updatedProject updated project
+     * @param projectName    project name
      * @return updated project
+     * @throws EntityNotFoundException when requested project entity not found
      */
-    public Project updateProject(UpdatedProject updatedProject,String projectName) {
+    public Project updateProject(UpdatedProject updatedProject, String projectName) throws EntityNotFoundException {
         Project project = projectRepo.findProjectByProjectName(projectName);
-        project.setTeamName(updatedProject.getTeamName());
-        project.setProjectDescription(updatedProject.getProjectDescription());
-        project.setProjectType(updatedProject.getProjectType());
-        project.setStoryPoints(updatedProject.getStoryPoints());
-        project.setTotalSprints(updatedProject.getTotalSprints());
-        project.setStartDate(updatedProject.getStartDate());
-        project.setEndDate(updatedProject.getEndDate());
-        return projectRepo.save(project);
+        if (Objects.isNull(project)) {
+            throw new EntityNotFoundException("Requested Project Details Not Found");
+        } else {
+            project.setTeamName(updatedProject.getTeamName());
+            project.setProjectDescription(updatedProject.getProjectDescription());
+            project.setProjectType(updatedProject.getProjectType());
+            project.setStoryPoints(updatedProject.getStoryPoints());
+            project.setTotalSprints(updatedProject.getTotalSprints());
+            project.setStartDate(updatedProject.getStartDate());
+            project.setEndDate(updatedProject.getEndDate());
+            return projectRepo.save(project);
+        }
     }
 
     /**
@@ -68,9 +82,14 @@ public class ProjectService {
      *
      * @param projectName
      * @return project
+     * @throws EntityNotFoundException when requested project entity not found
      */
-    public Project getProjectByProjectName(String projectName) {
-        return projectRepo.findProjectByProjectName(projectName);
+    public Project getProjectByProjectName(String projectName) throws EntityNotFoundException {
+        Project project = projectRepo.findProjectByProjectName(projectName);
+        if (Objects.isNull(project)) {
+            throw new EntityNotFoundException("Requested Project Details Not Found");
+        }
+        return project;
     }
 
 }

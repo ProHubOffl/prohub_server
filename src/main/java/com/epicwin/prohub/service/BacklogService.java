@@ -1,5 +1,6 @@
 package com.epicwin.prohub.service;
 
+import com.epicwin.prohub.exception.EntityNotFoundException;
 import com.epicwin.prohub.model.backlog.Backlog;
 import com.epicwin.prohub.repo.BacklogRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,15 @@ public class BacklogService {
      *
      * @param backlogId backlog id
      * @return backlog entity
+     * @throws EntityNotFoundException when requested backlog entity not found
      */
-    public Backlog getBacklogByBacklogId(int backlogId) {
-        return backlogRepo.findByBacklogId(backlogId);
+    public Backlog getBacklogByBacklogId(int backlogId) throws EntityNotFoundException {
+        Backlog backlog = backlogRepo.findByBacklogId(backlogId);
+        if (Objects.isNull(backlog)) {
+            throw new EntityNotFoundException("Requested Backlog Entity Not Found");
+        } else {
+            return backlog;
+        }
     }
 
     /**
@@ -43,9 +50,16 @@ public class BacklogService {
      * @param backlogId   backlog id
      * @param projectName project name
      * @return backlog entity
+     * @throws EntityNotFoundException when requested backlog entity not found
      */
-    public Backlog getBacklogByBacklogIdAndProjectName(int backlogId, String projectName) {
-        return backlogRepo.findBacklogByBacklogIdAndProjectName(backlogId, projectName);
+    public Backlog getBacklogByBacklogIdAndProjectName(int backlogId, String projectName)
+            throws EntityNotFoundException {
+        Backlog backlog = backlogRepo.findBacklogByBacklogIdAndProjectName(backlogId, projectName);
+        if (Objects.isNull(backlog)) {
+            throw new EntityNotFoundException("Requested Backlog Entity Not Found");
+        } else {
+            return backlog;
+        }
     }
 
     /**
@@ -64,24 +78,30 @@ public class BacklogService {
      * @param backlogId backlog id
      * @param backlog   updated backlog entity
      * @return updated backlog entity
+     * @throws EntityNotFoundException when requested backlog entity not found
      */
-    public Backlog updateBacklog(int backlogId, Backlog backlog) {
-        backlog.setBacklogId(backlogId);
-        return backlogRepo.save(backlog);
+    public Backlog updateBacklog(int backlogId, Backlog backlog) throws EntityNotFoundException {
+        Backlog oldBacklog = getBacklogByBacklogId(backlogId);
+        if (Objects.isNull(oldBacklog)) {
+            throw new EntityNotFoundException("Requested Backlog Entity Not Found");
+        } else {
+            backlog.setBacklogId(backlogId);
+            return backlogRepo.save(backlog);
+        }
     }
 
     /**
      * Used for deleting backlog.
      *
      * @param backlogId backlog id
-     * @throws Exception when requested backlog entity not found
+     * @throws EntityNotFoundException when requested backlog entity not found
      */
-    public void deleteBacklogItem(int backlogId) throws Exception {
+    public void deleteBacklogItem(int backlogId) throws EntityNotFoundException {
         Backlog backlog = getBacklogByBacklogId(backlogId);
         if (!Objects.isNull(backlog)) {
             backlogRepo.delete(backlog);
         } else {
-            throw new Exception("Requested Entity not found");
+            throw new EntityNotFoundException("Requested Backlog Entity Not Found");
         }
     }
 
