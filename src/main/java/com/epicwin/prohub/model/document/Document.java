@@ -61,11 +61,11 @@ public class Document {
         this.updatedDate = updatedDate;
     }
 
-    public int getAnnouncementId() {
+    public int getDocumentId() {
         return documentId;
     }
 
-    public void setAnnouncementId(int announcementId) {
+    public void setDocumentId(int announcementId) {
         this.documentId = announcementId;
     }
 

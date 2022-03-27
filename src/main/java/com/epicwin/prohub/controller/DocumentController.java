@@ -1,21 +1,22 @@
 package com.epicwin.prohub.controller;
 
+import com.epicwin.prohub.response.ResponseFile;
 import com.epicwin.prohub.response.ResponseMessage;
 import com.epicwin.prohub.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * Controller class for handling document operations.
@@ -61,6 +62,37 @@ public class DocumentController {
             message = "Could not upload the file: " + file.getOriginalFilename() + "!";
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
         }
+    }
+
+    /**
+     * Used for getting Documents List based on email address.
+     *
+     * @param author email address
+     * @return Documents entity
+     */
+    @GetMapping("/{author}/documents")
+    public ResponseEntity<List<ResponseFile>> getListFiles(@PathVariable String author) {
+        List<ResponseFile> files = documentService.getAllFiles(author).map(dbFile -> {
+            String fileDownloadUri = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/documents/")
+                    .path(String.valueOf(dbFile.getDocumentId()))
+                    .toUriString();
+
+            return new ResponseFile(
+                    dbFile.getProjectName(),
+                    dbFile.getTitle(),
+                    dbFile.getDescription(),
+                    dbFile.getAuthor(),
+                    dbFile.getName(),
+                    dbFile.getType(),
+                    fileDownloadUri,
+                    dbFile.getCreatedDate(),
+                    dbFile.getUpdatedDate(),
+                    dbFile.getData().length);
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(files);
     }
 
 
