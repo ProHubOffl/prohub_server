@@ -36,8 +36,8 @@ public class Document {
     public Document() {
     }
 
-    public Document(int announcementId, String projectName, String title, String description, String author, String name, String type, byte[] data, Date createdDate, Date updatedDate) {
-        this.documentId = announcementId;
+    public Document(int documentId, String projectName, String title, String description, String author, String name, String type, byte[] data, Date createdDate, Date updatedDate) {
+        this.documentId = documentId;
         this.projectName = projectName;
         this.title = title;
         this.description = description;
@@ -49,7 +49,16 @@ public class Document {
         this.updatedDate = updatedDate;
     }
 
-    public Document(String projectName, String title, String description, String author, String documentName, String contentType, byte[] bytes, Date createdDate, Date updatedDate) {
+    public Document(String projectName, String title, String description, String author, String name, String type, byte[] data, Date createdDate, Date updatedDate) {
+        this.projectName = projectName;
+        this.title = title;
+        this.description = description;
+        this.author = author;
+        this.name = name;
+        this.type = type;
+        this.data = data;
+        this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
     }
 
     public int getAnnouncementId() {
