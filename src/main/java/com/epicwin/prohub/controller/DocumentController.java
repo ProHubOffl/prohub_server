@@ -1,15 +1,19 @@
 package com.epicwin.prohub.controller;
 
+import com.epicwin.prohub.model.document.Document;
 import com.epicwin.prohub.response.ResponseFile;
 import com.epicwin.prohub.response.ResponseMessage;
 import com.epicwin.prohub.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.persistence.EntityNotFoundException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,6 +27,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @CrossOrigin
+@Transactional
 public class DocumentController {
     @Autowired
     DocumentService documentService;
@@ -95,5 +100,74 @@ public class DocumentController {
         return ResponseEntity.status(HttpStatus.OK).body(files);
     }
 
+    /**
+     * Used for showing all Documents based on Project name.
+     *
+     * @param project_name Project Name
+     * @return Documents list
+     */
+    @GetMapping("/documents/project/{project_name}")
+    public ResponseEntity<List<ResponseFile>> getAllFilesByProjectname(@PathVariable String project_name) {
+        List<ResponseFile> files = documentService.getAllFilesByProjectname(project_name).map(dbFile -> {
+            String fileDownloadUri = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/documents/")
+                    .path(String.valueOf(dbFile.getDocumentId()))
+                    .toUriString();
+
+            return new ResponseFile(
+                    dbFile.getProjectName(),
+                    dbFile.getTitle(),
+                    dbFile.getDescription(),
+                    dbFile.getAuthor(),
+                    dbFile.getName(),
+                    dbFile.getType(),
+                    fileDownloadUri,
+                    dbFile.getCreatedDate(),
+                    dbFile.getUpdatedDate(),
+                    dbFile.getData().length);
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(files);
+    }
+
+    /**
+     * Used for showing all Document based on Document ID
+     *
+     * @param id document Id
+     * @return Document Entity
+     */
+    @GetMapping("/documents/{id}")
+    public ResponseEntity<byte[]> getSingleDocument(@PathVariable int id){
+        Document document = documentService.getDocumentByDocumentId(id);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + document.getName() + "\"")
+                .body(document.getData());
+    }
+
+    /**
+     * Used for updating a Document item.
+     *
+     * @param documentId Document id
+     * @param document updated Document entity
+     * @return updated Document entity
+     * @throws javax.persistence.EntityNotFoundException when requested Document entity not found
+     */
+    @PutMapping("/documents/update/{documentId}")
+    public Document updateDocumentItem(@PathVariable("documentId") int documentId, @RequestBody Document document) throws javax.persistence.EntityNotFoundException {
+        return documentService.updateDocumentItem(documentId, document);
+    }
+
+    /**
+     * Used for deleting an Document item.
+     *
+     * @param documentId Document id
+     * @throws EntityNotFoundException when requested Document entity not found
+     */
+    @DeleteMapping("/documents/remove/{documentId}")
+    public void deleteDocumentItem(@PathVariable("documentId") int documentId) throws EntityNotFoundException {
+        documentService.deleteDocumentItem(documentId);
+    }
 
 }
