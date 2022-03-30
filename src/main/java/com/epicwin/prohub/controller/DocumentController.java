@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -74,10 +75,11 @@ public class DocumentController {
      *
      * @param author email address
      * @return Documents entity
+     * @throws EntityNotFoundException when requested Document entity not found
      */
     @GetMapping("/{author}/documents")
-    public ResponseEntity<List<ResponseFile>> getListFiles(@PathVariable String author) {
-        List<ResponseFile> files = documentService.getAllFiles(author).map(dbFile -> {
+    public ResponseEntity<List<ResponseFile>> getListFiles(@PathVariable String author) throws EntityNotFoundException {
+        List<ResponseFile> files = documentService.getDocumentByAuthor(author).map(dbFile -> {
             String fileDownloadUri = ServletUriComponentsBuilder
                     .fromCurrentContextPath()
                     .path("/documents/")
@@ -105,9 +107,10 @@ public class DocumentController {
      *
      * @param project_name Project Name
      * @return Documents list
+     * @throws EntityNotFoundException when requested Document entity not found
      */
     @GetMapping("/documents/project/{project_name}")
-    public ResponseEntity<List<ResponseFile>> getAllFilesByProjectname(@PathVariable String project_name) {
+    public ResponseEntity<List<ResponseFile>> getAllFilesByProjectname(@PathVariable String project_name) throws EntityNotFoundException {
         List<ResponseFile> files = documentService.getAllFilesByProjectname(project_name).map(dbFile -> {
             String fileDownloadUri = ServletUriComponentsBuilder
                     .fromCurrentContextPath()
@@ -136,9 +139,10 @@ public class DocumentController {
      *
      * @param id document Id
      * @return Document Entity
+     * @throws EntityNotFoundException when requested Document entity not found
      */
     @GetMapping("/documents/{id}")
-    public ResponseEntity<byte[]> getSingleDocument(@PathVariable int id){
+    public ResponseEntity<byte[]> getSingleDocument(@PathVariable int id) throws EntityNotFoundException {
         Document document = documentService.getDocumentByDocumentId(id);
 
         return ResponseEntity.ok()
@@ -150,13 +154,23 @@ public class DocumentController {
      * Used for updating a Document item.
      *
      * @param documentId Document id
-     * @param document updated Document entity
      * @return updated Document entity
-     * @throws javax.persistence.EntityNotFoundException when requested Document entity not found
+     * @throws EntityNotFoundException when requested Document entity not found
      */
     @PutMapping("/documents/update/{documentId}")
-    public Document updateDocumentItem(@PathVariable("documentId") int documentId, @RequestBody Document document) throws javax.persistence.EntityNotFoundException {
-        return documentService.updateDocumentItem(documentId, document);
+    public Document updateDocumentItem(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("project_name") String projectName,
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("author") String author,
+            @RequestParam("created_date") String created_Date,
+            @RequestParam("last_updated_at") String updated_Date,
+            @PathVariable("documentId") int documentId) throws EntityNotFoundException, ParseException, IOException {
+        DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+        Date createdDate = format.parse(created_Date);
+        Date updatedDate = format.parse(updated_Date);
+        return documentService.updateDocumentItem(file,projectName,title,description,author,createdDate,updatedDate,documentId);
     }
 
     /**

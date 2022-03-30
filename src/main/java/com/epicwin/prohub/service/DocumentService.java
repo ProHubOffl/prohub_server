@@ -45,8 +45,9 @@ public class DocumentService {
      *
      * @param category email address
      * @return Documents list
+     * @throws EntityNotFoundException when requested Announcement entity not found
      */
-    public Stream<Document> getAllFiles(String category){
+    public Stream<Document> getDocumentByAuthor(String category) throws EntityNotFoundException {
         return documentRepo.findDocumentByAuthor(category).stream();
     }
 
@@ -55,8 +56,9 @@ public class DocumentService {
      *
      * @param project_name Project Name
      * @return Documents list
+     * @throws EntityNotFoundException when requested Announcement entity not found
      */
-    public Stream<Document> getAllFilesByProjectname(String project_name){
+    public Stream<Document> getAllFilesByProjectname(String project_name) throws EntityNotFoundException {
         return documentRepo.findDocumentByProjectName(project_name).stream();
     }
 
@@ -65,26 +67,42 @@ public class DocumentService {
      *
      * @param id document Id
      * @return Document Entity
+     * @throws EntityNotFoundException when requested Announcement entity not found
      */
-    public Document getDocumentByDocumentId(int id){
+    public Document getDocumentByDocumentId(int id) throws EntityNotFoundException {
         return documentRepo.findById(id).get();
     }
 
     /**
      * Used for updating Document.
      *
-     * @param documentId Document id
-     * @param document updated Document entity
+     * @param file file information
+     * @param projectName Project Name
+     * @param title Title
+     * @param description Description
+     * @param author Author
+     * @param createdDate Created Date
+     * @param updatedDate Last Updated Date
+     * @param documentId document Id
      * @return updated Document entity
      * @throws EntityNotFoundException when requested Document entity not found
      */
-    public Document updateDocumentItem(int documentId, Document document) throws EntityNotFoundException {
-
-        Document olddocument = getDocumentByDocumentId(documentId);
-        if (Objects.isNull(olddocument)) {
+    public Document updateDocumentItem(MultipartFile file, String projectName, String title, String description, String author, Date createdDate, Date updatedDate, int documentId) throws EntityNotFoundException, IOException {
+        Document document = getDocumentByDocumentId(documentId);
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        if (Objects.isNull(document)) {
             throw new EntityNotFoundException("Requested Document Entity Not Found");
         } else {
             document.setDocumentId(documentId);
+            document.setDescription(description);
+            document.setTitle(title);
+            document.setAuthor(author);
+            document.setUpdatedDate(updatedDate);
+            document.setCreatedDate(createdDate);
+            document.setProjectName(projectName);
+            document.setData(file.getBytes());
+            document.setType(file.getContentType());
+            document.setName(fileName);
             return documentRepo.save(document);
         }
     }
