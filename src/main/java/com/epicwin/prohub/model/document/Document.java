@@ -61,6 +61,17 @@ public class Document {
         this.updatedDate = updatedDate;
     }
 
+    public Document(String projectName, String title, String description, String author, String name, String type, byte[] data, Date createdDate) {
+        this.projectName = projectName;
+        this.title = title;
+        this.description = description;
+        this.author = author;
+        this.name = name;
+        this.type = type;
+        this.data = data;
+        this.createdDate = createdDate;
+    }
+
     public int getDocumentId() {
         return documentId;
     }

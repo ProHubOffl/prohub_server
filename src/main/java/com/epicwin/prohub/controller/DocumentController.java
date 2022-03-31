@@ -42,7 +42,6 @@ public class DocumentController {
      * @param description Description
      * @param author Author
      * @param created_Date Created Date
-     * @param updated_Date Last Updated Date
      * @return created Document entity
      */
     @PostMapping("/upload")
@@ -52,15 +51,13 @@ public class DocumentController {
              @RequestParam("title") String title,
              @RequestParam("description") String description,
              @RequestParam("author") String author,
-             @RequestParam("created_date") String created_Date,
-             @RequestParam("last_updated_at") String updated_Date) throws ParseException {
+             @RequestParam("created_date") String created_Date) throws ParseException {
 
         String message = "";
         DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
         Date createdDate = format.parse(created_Date);
-        Date updatedDate = format.parse(updated_Date);
         try {
-            documentService.saveDocument(file,projectName,title,description,author,createdDate,updatedDate);
+            documentService.saveDocument(file,projectName,title,description,author,createdDate);
 
             message = "Uploaded the file successfully: " + file.getOriginalFilename();
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));

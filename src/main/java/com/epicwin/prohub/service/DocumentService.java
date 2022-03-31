@@ -34,9 +34,9 @@ public class DocumentService {
      * @return created Document entity
      * @throws IOException
      */
-    public Document saveDocument(MultipartFile file, String projectName, String title, String description, String author, Date createdDate, Date updatedDate) throws IOException {
+    public Document saveDocument(MultipartFile file, String projectName, String title, String description, String author, Date createdDate) throws IOException {
         String documentName = StringUtils.cleanPath(file.getOriginalFilename());
-        Document document = new Document(projectName,title,description,author,documentName,file.getContentType(),file.getBytes(),createdDate,updatedDate);
+        Document document = new Document(projectName,title,description,author,documentName,file.getContentType(),file.getBytes(),createdDate);
         return documentRepo.save(document);
     }
 
