@@ -5,6 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Date;
 
+/**
+ * Entity class for holding ticket information.
+ */
 @Entity
 public class Ticket {
 

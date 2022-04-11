@@ -4,6 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+/**
+ * Entity class for holding ticket comment information.
+ */
 @Entity
 public class TicketComment {
 
