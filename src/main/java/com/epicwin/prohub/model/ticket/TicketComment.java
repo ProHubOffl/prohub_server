@@ -11,7 +11,7 @@ public class TicketComment {
     @Column(name = "comment_id")
     private int commentId;
     @Column(name = "ticket_id")
-    private int ticket_id;
+    private int ticketId;
     @Column(name = "comment")
     private String comment;
     @Column(name = "comment_owner")
@@ -22,9 +22,9 @@ public class TicketComment {
     public TicketComment() {
     }
 
-    public TicketComment(int commentId, int ticket_id, String comment, String commentOwner, String timeStamp) {
+    public TicketComment(int commentId, int ticketId, String comment, String commentOwner, String timeStamp) {
         this.commentId = commentId;
-        this.ticket_id = ticket_id;
+        this.ticketId = ticketId;
         this.comment = comment;
         this.commentOwner = commentOwner;
         this.timeStamp = timeStamp;
@@ -38,12 +38,12 @@ public class TicketComment {
         this.commentId = commentId;
     }
 
-    public int getTicket_id() {
-        return ticket_id;
+    public int getTicketId() {
+        return ticketId;
     }
 
-    public void setTicket_id(int ticket_id) {
-        this.ticket_id = ticket_id;
+    public void setTicketId(int ticketId) {
+        this.ticketId = ticketId;
     }
 
     public String getComment() {
