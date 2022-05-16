@@ -1,17 +1,17 @@
 package com.epicwin.prohub.model.ticket;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
  * Entity class for holding ticket information.
  */
 @Entity
+@Table(name = "tickets")
 public class Ticket {
 
     @Id
+    @GeneratedValue
     @Column(name = "ticket_id")
     private int ticketId;
     @Column(name = "title")
@@ -23,9 +23,9 @@ public class Ticket {
     @Column(name = "created_by")
     private String createdBy;
     @Column(name = "created_at")
-    private Date createdAt;
+    private String createdAt;
     @Column(name = "finished_at")
-    private Date finishedAt;
+    private String finishedAt;
     @Column(name = "operator")
     private String operator;
     @Column(name = "status")
@@ -34,8 +34,8 @@ public class Ticket {
     public Ticket() {
     }
 
-    public Ticket(int ticketId, String title, String description,
-                  String projectName, String createdBy, Date createdAt, Date finishedAt, String operator, String status) {
+    public Ticket(int ticketId, String title, String description, String projectName,
+                  String createdBy, String createdAt, String finishedAt, String operator, String status) {
         this.ticketId = ticketId;
         this.title = title;
         this.description = description;
@@ -87,19 +87,19 @@ public class Ticket {
         this.createdBy = createdBy;
     }
 
-    public Date getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getFinishedAt() {
+    public String  getFinishedAt() {
         return finishedAt;
     }
 
-    public void setFinishedAt(Date finishedAt) {
+    public void setFinishedAt(String finishedAt) {
         this.finishedAt = finishedAt;
     }
 

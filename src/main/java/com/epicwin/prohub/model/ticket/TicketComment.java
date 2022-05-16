@@ -1,16 +1,16 @@
 package com.epicwin.prohub.model.ticket;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Entity class for holding ticket comment information.
  */
 @Entity
+@Table(name = "ticket_comments")
 public class TicketComment {
 
     @Id
+    @GeneratedValue
     @Column(name = "comment_id")
     private int commentId;
     @Column(name = "ticket_id")
