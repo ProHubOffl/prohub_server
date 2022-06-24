@@ -80,7 +80,6 @@ public class DocumentService {
      * @param title Title
      * @param description Description
      * @param author Author
-     //* @param createdDate Created Date
      * @param updatedDate Last Updated Date
      * @param documentId document Id
      * @return updated Document entity
