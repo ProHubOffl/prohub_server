@@ -56,23 +56,18 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public int register(@RequestBody User user) throws EntityNotFoundException {
-        User user1 = userService.getUser(user.getEmail());
-        if (Objects.isNull(user1)) {
-            userService.saveUser(user);
-            String title = "Welcome to ProHub";
-            String content = "Hi! " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
-                    "Thank you for registering to ProHub. " +
-                    "Make your project management things easier with ProHub.\n\nThanks,\nTeam ProHub";
-            try {
-                sendEmail(user.getEmail(), title, content);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return Response.SC_OK;
-        } else {
-            return Response.SC_BAD_REQUEST;
+    public int register(@RequestBody User user) {
+        userService.saveUser(user);
+        String title = "Welcome to ProHub";
+        String content = "Hi! " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
+                "Thank you for registering to ProHub. " +
+                "Make your project management things easier with ProHub.\n\nThanks,\nTeam ProHub";
+        try {
+            sendEmail(user.getEmail(), title, content);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return Response.SC_OK;
     }
 
     @PostMapping("/users")
