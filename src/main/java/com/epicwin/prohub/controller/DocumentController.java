@@ -41,7 +41,6 @@ public class DocumentController {
      * @param title Title
      * @param description Description
      * @param author Author
-     * @param created_Date Created Date
      * @return created Document entity
      */
     @PostMapping("/upload")
@@ -50,12 +49,10 @@ public class DocumentController {
              @RequestParam("project_name") String projectName,
              @RequestParam("title") String title,
              @RequestParam("description") String description,
-             @RequestParam("author") String author,
-             @RequestParam("created_date") String created_Date) throws ParseException {
+             @RequestParam("author") String author) throws ParseException {
 
         String message = "";
-        DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
-        Date createdDate = format.parse(created_Date);
+        Date createdDate =new Date();
         try {
             documentService.saveDocument(file,projectName,title,description,author,createdDate);
 
@@ -116,6 +113,7 @@ public class DocumentController {
                     .toUriString();
 
             return new ResponseFile(
+                    dbFile.getDocumentId(),
                     dbFile.getProjectName(),
                     dbFile.getTitle(),
                     dbFile.getDescription(),
@@ -161,13 +159,10 @@ public class DocumentController {
             @RequestParam("title") String title,
             @RequestParam("description") String description,
             @RequestParam("author") String author,
-            @RequestParam("created_date") String created_Date,
-            @RequestParam("last_updated_at") String updated_Date,
             @PathVariable("documentId") int documentId) throws EntityNotFoundException, ParseException, IOException {
-        DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
-        Date createdDate = format.parse(created_Date);
-        Date updatedDate = format.parse(updated_Date);
-        return documentService.updateDocumentItem(file,projectName,title,description,author,createdDate,updatedDate,documentId);
+
+        Date updatedDate =new Date();
+        return documentService.updateDocumentItem(file,projectName,title,description,author,updatedDate,documentId);
     }
 
     /**

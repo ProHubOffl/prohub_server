@@ -30,7 +30,6 @@ public class DocumentService {
      * @param description Description
      * @param author Author
      * @param createdDate Created Date
-     * @param updatedDate Last Updated Date
      * @return created Document entity
      * @throws IOException
      */
@@ -81,13 +80,12 @@ public class DocumentService {
      * @param title Title
      * @param description Description
      * @param author Author
-     * @param createdDate Created Date
      * @param updatedDate Last Updated Date
      * @param documentId document Id
      * @return updated Document entity
      * @throws EntityNotFoundException when requested Document entity not found
      */
-    public Document updateDocumentItem(MultipartFile file, String projectName, String title, String description, String author, Date createdDate, Date updatedDate, int documentId) throws EntityNotFoundException, IOException {
+    public Document updateDocumentItem(MultipartFile file, String projectName, String title, String description, String author, Date updatedDate, int documentId) throws EntityNotFoundException, IOException {
         Document document = getDocumentByDocumentId(documentId);
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         if (Objects.isNull(document)) {
@@ -98,7 +96,7 @@ public class DocumentService {
             document.setTitle(title);
             document.setAuthor(author);
             document.setUpdatedDate(updatedDate);
-            document.setCreatedDate(createdDate);
+            //document.setCreatedDate(createdDate);
             document.setProjectName(projectName);
             document.setData(file.getBytes());
             document.setType(file.getContentType());
