@@ -24,14 +24,14 @@ public class Project {
     @Column(name = "total_sprints")
     private int totalSprints;
     @Column(name = "start_date")
-    private Date startDate;
+    private String startDate;
     @Column(name = "end_date")
-    private Date endDate;
+    private String endDate;
 
     public Project() {
     }
 
-    public Project(String projectName, String teamName, String projectDescription, String projectType, int storyPoints, int totalSprints, Date startDate, Date endDate) {
+    public Project(String projectName, String teamName, String projectDescription, String projectType, int storyPoints, int totalSprints, String startDate, String endDate) {
         this.projectName = projectName;
         this.teamName = teamName;
         this.projectDescription = projectDescription;
@@ -90,19 +90,19 @@ public class Project {
         this.totalSprints = totalSprints;
     }
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 }
