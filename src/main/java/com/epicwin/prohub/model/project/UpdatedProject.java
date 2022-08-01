@@ -11,14 +11,14 @@ public class UpdatedProject {
     private String projectType;
     private int storyPoints;
     private int totalSprints;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
 
     public UpdatedProject() {
 
     }
 
-    public UpdatedProject(String teamName, String projectDescription, String projectType, int storyPoints, int totalSprints, Date startDate, Date endDate) {
+    public UpdatedProject(String teamName, String projectDescription, String projectType, int storyPoints, int totalSprints, String startDate, String endDate) {
         this.teamName = teamName;
         this.projectDescription = projectDescription;
         this.projectType = projectType;
@@ -68,19 +68,19 @@ public class UpdatedProject {
         this.totalSprints = totalSprints;
     }
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 }
