@@ -22,14 +22,14 @@ public class Announcement {
     @Column(name = "author")
     private String author ;
     @Column(name = "created_date")
-    private Date createdDate;
+    private String createdDate;
     @Column(name = "last_updated_at")
-    private Date updatedDate;
+    private String updatedDate;
 
     public Announcement(){
     }
 
-    public Announcement(int announcementId, String projectName, String title, String description, String author, Date createdDate, Date updatedDate) {
+    public Announcement(int announcementId, String projectName, String title, String description, String author, String createdDate, String updatedDate) {
         this.announcementId = announcementId;
         this.projectName = projectName;
         this.title = title;
@@ -79,19 +79,19 @@ public class Announcement {
         this.author = author;
     }
 
-    public Date getCreatedDate() {
+    public String getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
+    public void setCreatedDate(String createdDate) {
         this.createdDate = createdDate;
     }
 
-    public Date getUpdatedDate() {
+    public String getUpdatedDate() {
         return updatedDate;
     }
 
-    public void setUpdatedDate(Date updatedDate) {
+    public void setUpdatedDate(String updatedDate) {
         this.updatedDate = updatedDate;
     }
 }
