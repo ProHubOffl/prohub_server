@@ -90,4 +90,15 @@ public class AnnouncementController {
     public void deleteAnnouncementItem(@PathVariable("announcementId") int announcementId) throws EntityNotFoundException {
         announcementService.deleteAnnouncementItem(announcementId);
     }
+
+    /**
+     * Used for get document Count based on ProjectName.
+     *
+     * @param projectName Project Name
+     * @return Total Documents under this Project
+     */
+    @GetMapping("/announcement/count/{project_name}")
+    public Integer documentsCountbyProject(@PathVariable("project_name") String projectName){
+        return announcementService.getAnnouncementcountByProjectName(projectName);
+    }
 }

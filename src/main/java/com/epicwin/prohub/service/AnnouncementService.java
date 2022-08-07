@@ -105,4 +105,14 @@ public class AnnouncementService {
         }
     }
 
+    /**
+     * Used for get Announcement Count based on ProjectName.
+     *
+     * @param ProjectName Project Name
+     * @return Total Announcements under this Project
+     */
+    public Integer getAnnouncementcountByProjectName(String ProjectName) throws EntityNotFoundException {
+        return Math.toIntExact(announcementRepo.findAllByProjectName(ProjectName).stream().count());
+    }
+
 }

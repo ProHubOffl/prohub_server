@@ -176,4 +176,15 @@ public class DocumentController {
         documentService.deleteDocumentItem(documentId);
     }
 
+    /**
+     * Used for get document Count based on ProjectName.
+     *
+     * @param projectName Project Name
+     * @return Total Documents under this Project
+     */
+    @GetMapping("/documents/count/{project_name}")
+    public Integer documentsCountbyProject(@PathVariable("project_name") String projectName){
+        return documentService.getDocumentcountByProjectName(projectName);
+    }
+
 }
