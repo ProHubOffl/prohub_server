@@ -120,4 +120,14 @@ public class DocumentService {
         }
     }
 
+    /**
+     * Used for get document Count based on ProjectName.
+     *
+     * @param ProjectName Project Name
+     * @return Total Documents under this Project
+     */
+    public Integer getDocumentcountByProjectName(String ProjectName) throws EntityNotFoundException {
+        return Math.toIntExact(documentRepo.findDocumentByProjectName(ProjectName).stream().count());
+    }
+
 }
