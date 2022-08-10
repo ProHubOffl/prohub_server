@@ -91,4 +91,29 @@ public class BacklogController {
     public void deleteBacklogItem(@PathVariable("backlogId") int backlogId) throws EntityNotFoundException {
         backlogService.deleteBacklogItem(backlogId);
     }
+
+    /**
+     * Used for getting backlog based on email and projectName.
+     *
+     * @param email       email
+     * @param projectName project name
+     * @return backlog entity
+     * @throws EntityNotFoundException when requested backlog entity not found
+     */
+    @GetMapping("/{projectName}/backlog/{email}")
+    public List<Backlog> getBackLogByProjectNameAndEmail(@PathVariable("projectName") String projectName,
+                                                         @PathVariable("email") String email) throws EntityNotFoundException {
+        return backlogService.getBacklogByEmailAndProjectName(projectName,email);
+    }
+
+    /**
+     *  Used for getting backlog based on email.
+     *
+     * @param email
+     * @return backlog entity
+     */
+    @GetMapping("/backlogs/{email}")
+    public List<Backlog> getBackLogByEmail(@PathVariable("email") String email) {
+        return backlogService.getBacklogByEmail(email);
+    }
 }
