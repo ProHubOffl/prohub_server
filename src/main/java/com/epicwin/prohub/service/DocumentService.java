@@ -127,7 +127,7 @@ public class DocumentService {
      * @return Total Documents under this Project
      */
     public Integer getDocumentcountByProjectName(String ProjectName) throws EntityNotFoundException {
-        return Math.toIntExact(documentRepo.findDocumentByProjectName(ProjectName).stream().count());
+        return documentRepo.countDocumentByProjectName(ProjectName);
     }
 
 }

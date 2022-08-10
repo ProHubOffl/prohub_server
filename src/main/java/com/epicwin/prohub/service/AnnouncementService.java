@@ -112,7 +112,7 @@ public class AnnouncementService {
      * @return Total Announcements under this Project
      */
     public Integer getAnnouncementcountByProjectName(String ProjectName) throws EntityNotFoundException {
-        return Math.toIntExact(announcementRepo.findAllByProjectName(ProjectName).stream().count());
+        return announcementRepo.countAnnouncementByProjectName(ProjectName);
     }
 
 }
