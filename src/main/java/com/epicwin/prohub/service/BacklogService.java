@@ -105,4 +105,24 @@ public class BacklogService {
         }
     }
 
+    /**
+     * Used for getting backlog based on email and projectName.
+     *
+     * @param email email
+     * @param projectName project name
+     * @return backlog entity
+     */
+    public List<Backlog> getBacklogByEmailAndProjectName(String projectName, String email) {
+        return backlogRepo.findAllByAssigneeAndProjectName(email, projectName);
+    }
+
+    /**
+     *  Used for getting backlog based on email.
+     *
+     * @param email
+     * @return backlog entity
+     */
+    public List<Backlog> getBacklogByEmail(String email) {
+        return backlogRepo.findAllByAssignee(email);
+    }
 }

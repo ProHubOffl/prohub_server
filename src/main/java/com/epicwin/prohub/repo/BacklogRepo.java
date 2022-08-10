@@ -18,4 +18,8 @@ public interface BacklogRepo extends JpaRepository<Backlog, Integer> {
     Backlog findBacklogByBacklogIdAndProjectName(int backlogId, String projectName);
 
     Backlog findByBacklogId(int backlogId);
+
+    List<Backlog> findAllByAssigneeAndProjectName(String assignee, String projectName);
+
+    List<Backlog> findAllByAssignee(String email);
 }
