@@ -23,9 +23,16 @@ public class ProjectService {
      *
      * @param project
      * @return created project
+     * @throws Exception when project name already taken in
      */
-    public Project saveProject(Project project) {
-        return projectRepo.save(project);
+    public Project saveProject(Project project) throws Exception {
+        Project oldProject = projectRepo.findProjectByProjectName(project.getProjectName());
+        if(Objects.isNull(oldProject)){
+            return projectRepo.save(project);
+        }
+        else {
+            throw new Exception("Project Name Already Taken In");
+        }
     }
 
     /**
