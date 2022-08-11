@@ -24,9 +24,10 @@ public class ProjectController {
      *
      * @param project
      * @return created project
+     * @throws Exception when project name already taken in
      */
     @PostMapping("/project")
-    public Project createproject(@RequestBody Project project) {
+    public Project createproject(@RequestBody Project project) throws Exception {
         return projectService.saveProject(project);
     }
 
