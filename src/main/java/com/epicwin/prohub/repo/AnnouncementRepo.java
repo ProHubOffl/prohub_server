@@ -19,4 +19,6 @@ public interface AnnouncementRepo extends JpaRepository<Announcement, Integer> {
 
     Announcement findAnnouncementByAnnouncementIdAndProjectName(int announcementid, String projectName);
 
+    Integer countAnnouncementByProjectName(String projectName);
+
 }

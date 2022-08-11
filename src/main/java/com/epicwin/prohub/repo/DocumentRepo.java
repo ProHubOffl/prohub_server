@@ -20,4 +20,6 @@ public interface DocumentRepo extends JpaRepository<Document, Integer> {
 
     Document findDocumentByDocumentIdAndProjectName(int id, String projectName);
 
+    Integer countDocumentByProjectName(String ProjectName);
+
 }
